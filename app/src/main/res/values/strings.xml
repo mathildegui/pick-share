@@ -14,5 +14,7 @@
     <string name="title_activity_camera_preview">CameraPreview</string>
     <string name="error_camera_preview">Error camera preview</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_custom_pick">CustomPickActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
