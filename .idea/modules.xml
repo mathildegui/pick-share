@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/CustomCam.iml" filepath="$PROJECT_DIR$/CustomCam.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/librairies/androidHorizontalListView/androidHorizontalListView.iml" filepath="$PROJECT_DIR$/app/librairies/androidHorizontalListView/androidHorizontalListView.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

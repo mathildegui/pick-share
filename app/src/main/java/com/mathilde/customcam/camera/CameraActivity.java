@@ -1,6 +1,8 @@
 package com.mathilde.customcam.camera;
 
 import android.annotation.TargetApi;
+import android.app.Dialog;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,10 +27,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mathilde.customcam.R;
+import com.mathilde.customcam.custom_pick.CustomPickActivity;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
 import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
@@ -84,6 +88,7 @@ public class CameraActivity extends FragmentActivity {
 
         private static String TAG = "PlaceholderFragment";
         private Camera mCamera;
+        private FrameLayout mPreview;
         private CameraPreview mCameraPreview;
         private MediaRecorder mMediaRecorder;
 
@@ -93,7 +98,6 @@ public class CameraActivity extends FragmentActivity {
         private Button mSwitchVideoButton;
         private ImageView mTakePictureButton;
         private ImageView mParamsButton;
-//        private ImageView mPreviewImageView;
 
         private Boolean mIsGrid = true;
         private Boolean mIsBack = true;
@@ -116,7 +120,7 @@ public class CameraActivity extends FragmentActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_camera, container, false);
             View v = initView(rootView);
-
+            showOverLay();
             mOrientationEventListener = new OrientationEventListener(getActivity(), SensorManager.SENSOR_DELAY_NORMAL) {
                 @Override
                 public void onOrientationChanged(int iAngle) {
@@ -135,72 +139,31 @@ public class CameraActivity extends FragmentActivity {
         }
 
         public View initView(View v) {
-            FrameLayout preview = (FrameLayout) v.findViewById(R.id.camera_preview);
+            mPreview = (FrameLayout) v.findViewById(R.id.camera_preview);
             //Create the instance of the camera
-            mCamera = getCameraInstance(Camera.CameraInfo.CAMERA_FACING_BACK);
+            //mCamera = getCameraInstance(Camera.CameraInfo.CAMERA_FACING_BACK);
             mGridButton = (Button) v.findViewById(R.id.grid);
             mSwitchCameraButton = (Button) v.findViewById(R.id.switch_camera);
             mGridLines = (GridLines) v.findViewById(R.id.grid_lines);
             mFlashButton = (Button) v.findViewById(R.id.flash);
             mTakePictureButton = (ImageView) v.findViewById(R.id.camera);
-//            mPreviewImageView = (ImageView) v.findViewById(R.id.image_preview);
             mSwitchVideoButton = (Button) v.findViewById(R.id.switch_to_video);
             mParamsButton = (ImageView)v.findViewById(R.id.params);
             mSaveFile = new SaveFile(getActivity());
-            /*
-            TODO
-            * set settings to the camera
-            *
-            */
-            Camera.Parameters params = mCamera.getParameters();
-            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
-            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
-            params.setPictureFormat(ImageFormat.JPEG);
-            params.setJpegQuality(100);
-            mCamera.setParameters(params);
 
-//            ImageView icon = new ImageView(getActivity()); // Create an icon
-//            icon.setImageDrawable(getResources().getDrawable(R.drawable.xxsmall_circle));
-//            FloatingActionButton actionButton = new FloatingActionButton.Builder(getActivity())
-//                    .attachTo(mParamsButton)
-//                    .build();
-            SubActionButton.Builder itemBuilder = new SubActionButton.Builder(getActivity());
-// repeat many times:
-            ImageView itemIcon = new ImageView(getActivity());
-            ImageView itemIcon2 = new ImageView(getActivity());
-            itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.small_circle_red));
-            TextView itemText = new TextView(getActivity());
-            itemText.setText("T.L.");
-            itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.small_circle_orange));
-            SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
-            SubActionButton button2 = itemBuilder.setContentView(itemIcon2).build();
-            SubActionButton button3 = itemBuilder.setContentView(itemText).build();
+            initFloatingMenu();
 
-            FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(getActivity())
-                    .setStartAngle(-70)
-                    .setEndAngle(-20)
-                    .addSubActionView(button1)
-                    .addSubActionView(button2)
-                    .addSubActionView(button3)
-                    .attachTo(mParamsButton)
-                    .build();
-            button3.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "J'AI CLIQUE SUR LE BOUTON ####");
-                    // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-                    mIsTimeLapse = true;
-                    mIsCamera = false;
-                }
-            });
+//            initParamsCamera();
+
+
             mSwitchCameraButton.setOnClickListener(this);
             mGridButton.setOnClickListener(this);
             mFlashButton.setOnClickListener(this);
             mTakePictureButton.setOnClickListener(this);
             mSwitchVideoButton.setOnClickListener(this);
 
-            mCameraPreview = new CameraPreview(getActivity().getBaseContext(), mCamera);
-            preview.addView(mCameraPreview, 0);
+//            mCameraPreview = new CameraPreview(getActivity().getBaseContext(), mCamera);
+//            mPreview.addView(mCameraPreview, 0);
             return v;
         }
 
@@ -341,8 +304,11 @@ public class CameraActivity extends FragmentActivity {
                     e.printStackTrace();
                 }
                 //setImage(pictureFile, 0);
-                mCamera.startPreview();
+
+                //mCamera.startPreview();
                 mOnProgress = false;
+releaseCamera();
+                startActivity(new Intent(getActivity(), CustomPickActivity.class).putExtra("path",Uri.fromFile(pictureFile)));
             }
         };
 
@@ -366,15 +332,12 @@ public class CameraActivity extends FragmentActivity {
         public void onResume() {
             Log.d(TAG, "onResume");
             super.onResume();
-            if (mCamera == null) {
-                Log.d(TAG, "null");
-                if (mIsBack) {
-                    mCamera = getCameraInstance(Camera.CameraInfo.CAMERA_FACING_BACK);
-                } else {
-                    mCamera = getCameraInstance(Camera.CameraInfo.CAMERA_FACING_FRONT);
-                }
-                mCameraPreview.update(mCamera);
-            }
+            //TODO : diplay preview when user come back
+
+            mCamera = getCameraInstance(Camera.CameraInfo.CAMERA_FACING_BACK);
+            initParamsCamera();
+            mCameraPreview = new CameraPreview(getActivity().getBaseContext(), mCamera);
+            mPreview.addView(mCameraPreview, 0);
         }
 
 //        public void setImage(File file, int rotate) {
@@ -450,7 +413,7 @@ public class CameraActivity extends FragmentActivity {
                     CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH);
                     mMediaRecorder.setProfile(camcorderProfile);
                     // Step 5.5: Set the video capture rate to a low number
-                     // capture a frame every 10 seconds
+                    // capture a frame every 10 seconds
                 } else if(mIsBack){
                     CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
                     mMediaRecorder.setProfile(camcorderProfile);
@@ -458,7 +421,7 @@ public class CameraActivity extends FragmentActivity {
                     CamcorderProfile camcorderProfile = CamcorderProfile.get(Camera.CameraInfo.CAMERA_FACING_FRONT, CamcorderProfile.QUALITY_LOW);
                     mMediaRecorder.setProfile(camcorderProfile);
                 }
-                mMediaRecorder.setVideoSize(640,480);
+                mMediaRecorder.setVideoSize(640, 480);
             }
 
             mMediaRecorder.setOutputFile(mSaveFile.getOutputMediaFile(SaveFile.MEDIA_TYPE_VIDEO).toString());
@@ -501,6 +464,65 @@ public class CameraActivity extends FragmentActivity {
                 mCamera = null;
                 mCameraPreview.getHolder().removeCallback(mCameraPreview);
             }
+        }
+
+        /**
+         * init the menu to the time lapse mode
+         */
+        public void initFloatingMenu(){
+            SubActionButton.Builder itemBuilder = new SubActionButton.Builder(getActivity());
+
+            ImageView itemIcon = new ImageView(getActivity());
+            ImageView itemIcon2 = new ImageView(getActivity());
+            itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.small_circle_red));
+            TextView itemText = new TextView(getActivity());
+            itemText.setText("T.L.");
+            itemIcon.setImageDrawable(getResources().getDrawable(R.drawable.small_circle_orange));
+            SubActionButton button1 = itemBuilder.setContentView(itemIcon).build();
+            SubActionButton button2 = itemBuilder.setContentView(itemIcon2).build();
+            SubActionButton button3 = itemBuilder.setContentView(itemText).build();
+
+            FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(getActivity())
+                    .setStartAngle(-70)
+                    .setEndAngle(-20)
+                    .addSubActionView(button1)
+                    .addSubActionView(button2)
+                    .addSubActionView(button3)
+                    .attachTo(mParamsButton)
+                    .build();
+            button3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+                    mIsTimeLapse = true;
+                    mIsCamera = false;
+                }
+            });
+        }
+
+        /**
+         * Init the initial camera parameters
+         */
+        public void initParamsCamera(){
+            Camera.Parameters params = mCamera.getParameters();
+            params.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+            params.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
+            params.setPictureFormat(ImageFormat.JPEG);
+            params.setJpegQuality(100);
+            mCamera.setParameters(params);
+        }
+
+        public void showOverLay(){
+            final Dialog dialog = new Dialog(getActivity(), android.R.style.Theme_Translucent_NoTitleBar);
+            dialog.setContentView(R.layout.overlay_view);
+            LinearLayout layout = (LinearLayout) dialog.findViewById(R.id.overlayLayout);
+            layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View arg0) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.show();
         }
     }
 }

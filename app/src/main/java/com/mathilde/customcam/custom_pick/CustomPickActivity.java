@@ -1,17 +1,24 @@
 package com.mathilde.customcam.custom_pick;
 
-import android.app.Activity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.mathilde.customcam.R;
 
-public class CustomPickActivity extends Activity {
+public class CustomPickActivity extends FragmentActivity implements CustomPickFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_custom_pick);
+        if (savedInstanceState == null) {
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, new CustomPickFragment())
+                    .commit();
+        }
     }
 
 
@@ -32,5 +39,10 @@ public class CustomPickActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
