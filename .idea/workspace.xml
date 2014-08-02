@@ -80,26 +80,26 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CustomPickFragment.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="CustomPickFragment.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/custom_pick/CustomPickFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.46153846" vertical-offset="1440" max-vertical-offset="2640">
-              <caret line="108" column="58" selection-start-line="108" selection-start-column="58" selection-end-line="108" selection-end-column="58" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="1369" max-vertical-offset="2580">
+              <caret line="112" column="13" selection-start-line="112" selection-start-column="13" selection-end-line="112" selection-end-column="13" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#3718#3727#0" expanded="true" />
-                <element signature="e#3900#4216#0" expanded="true" />
-                <element signature="e#4205#4206#0" expanded="true" />
+                <element signature="e#3648#3657#0" expanded="true" />
+                <element signature="e#3770#4038#0" expanded="true" />
+                <element signature="e#4027#4028#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="StartPointSeekBar.java" pinned="false" current="false" current-in-tab="false">
+      <file leaf-file-name="StartPointSeekBar.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/widget/StartPointSeekBar.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-8.307693" vertical-offset="294" max-vertical-offset="8010">
-              <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+            <state vertical-scroll-proportion="0.7556008" vertical-offset="7519" max-vertical-offset="8010">
+              <caret line="526" column="5" selection-start-line="526" selection-start-column="5" selection-end-line="526" selection-end-column="5" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#1275#1276#0" expanded="true" />
@@ -118,6 +118,19 @@
                 <element signature="e#12193#12194#0" expanded="true" />
                 <element signature="e#12228#12229#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="fragment_custom_pick.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fragment_custom_pick.xml">
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-6.6666665" vertical-offset="0" max-vertical-offset="495">
+              <caret line="12" column="52" selection-start-line="12" selection-start-column="52" selection-end-line="12" selection-end-column="52" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -1452,9 +1465,9 @@
         <option value="$PROJECT_DIR$/app/src/main/res/values/attrs.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/widget/RangeSeekBar.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/widget/RangeSeekbar.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/custom_pick/CustomPickFragment.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_custom_pick.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/widget/StartPointSeekBar.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/fragment_custom_pick.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/custom_pick/CustomPickFragment.java" />
       </list>
     </option>
   </component>
@@ -2082,13 +2095,13 @@
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.38799414" sideWeight="0.17140536" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1830161" sideWeight="0.17140536" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32210836" sideWeight="0.6222583" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.38799414" sideWeight="0.8285946" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.1830161" sideWeight="0.8285946" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -2531,16 +2544,29 @@
         <state />
       </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.185185" vertical-offset="124" max-vertical-offset="735">
-          <caret line="32" column="44" selection-start-line="32" selection-start-column="44" selection-end-line="32" selection-end-column="44" />
+        <state vertical-scroll-proportion="-6.6666665" vertical-offset="0" max-vertical-offset="495">
+          <caret line="12" column="52" selection-start-line="12" selection-start-column="52" selection-end-line="12" selection-end-column="52" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/custom_pick/CustomPickFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="1369" max-vertical-offset="2580">
+          <caret line="112" column="13" selection-start-line="112" selection-start-column="13" selection-end-line="112" selection-end-column="13" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#3648#3657#0" expanded="true" />
+            <element signature="e#3770#4038#0" expanded="true" />
+            <element signature="e#4027#4028#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/widget/StartPointSeekBar.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-8.307693" vertical-offset="294" max-vertical-offset="8010">
-          <caret line="34" column="19" selection-start-line="34" selection-start-column="19" selection-end-line="34" selection-end-column="19" />
+        <state vertical-scroll-proportion="0.7556008" vertical-offset="7519" max-vertical-offset="8010">
+          <caret line="526" column="5" selection-start-line="526" selection-start-column="5" selection-end-line="526" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1275#1276#0" expanded="true" />
@@ -2558,19 +2584,6 @@
             <element signature="e#12048#12049#0" expanded="true" />
             <element signature="e#12193#12194#0" expanded="true" />
             <element signature="e#12228#12229#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/mathilde/customcam/custom_pick/CustomPickFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.46153846" vertical-offset="1440" max-vertical-offset="2640">
-          <caret line="108" column="58" selection-start-line="108" selection-start-column="58" selection-end-line="108" selection-end-column="58" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#3718#3727#0" expanded="true" />
-            <element signature="e#3900#4216#0" expanded="true" />
-            <element signature="e#4205#4206#0" expanded="true" />
           </folding>
         </state>
       </provider>

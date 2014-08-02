@@ -37,8 +37,6 @@ public class CustomPickFragment extends Fragment {
     private HorizontalListView mHorizontalListView;
     private FilterAdapter mFilterAdapter;
     private List<String> mList;
-    private TextView mTextViewMax;
-    private TextView mTextViewMin;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -107,15 +105,13 @@ public class CustomPickFragment extends Fragment {
 
 
         StartPointSeekBar<Integer> seekBar = new StartPointSeekBar<Integer>(-100, +100, getActivity());
-        //mTextViewMax.setText("");
-        mTextViewMax = (TextView)v.findViewById(R.id.value_max);
+        seekBar.setNormalizedValue(0.5);
         seekBar.setOnSeekBarChangeListener(new StartPointSeekBar.OnSeekBarChangeListener<Integer>()
         {
             @Override
             public void onOnSeekBarValueChange(StartPointSeekBar<?> bar, Integer value)
             {
                 Log.d(TAG, "seekbar value:" + value);
-                mTextViewMax.setText(""+value);
             }
         });
 
