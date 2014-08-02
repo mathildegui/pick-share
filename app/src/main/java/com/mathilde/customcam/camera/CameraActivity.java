@@ -436,7 +436,7 @@ public class CameraActivity extends FragmentActivity {
             mMediaRecorder = new MediaRecorder();
             mMediaRecorder.setCamera(mCamera);
 
-            mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
+            if (!mIsTimeLapse) mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
             mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
             //Check the Android version
@@ -446,13 +446,14 @@ public class CameraActivity extends FragmentActivity {
                 mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.DEFAULT);
 
             } else {
-                if (mIsBack) {
+                if (mIsTimeLapse) {
+                    CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH);
+                    mMediaRecorder.setProfile(camcorderProfile);
+                    // Step 5.5: Set the video capture rate to a low number
+                     // capture a frame every 10 seconds
+                } else if(mIsBack){
                     CamcorderProfile camcorderProfile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
                     mMediaRecorder.setProfile(camcorderProfile);
-                } else if(mIsTimeLapse){
-                    mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH));
-                    // Step 5.5: Set the video capture rate to a low number
-                    mMediaRecorder.setCaptureRate(0.1); // capture a frame every 10 seconds
                 }else{
                     CamcorderProfile camcorderProfile = CamcorderProfile.get(Camera.CameraInfo.CAMERA_FACING_FRONT, CamcorderProfile.QUALITY_LOW);
                     mMediaRecorder.setProfile(camcorderProfile);
@@ -462,6 +463,7 @@ public class CameraActivity extends FragmentActivity {
 
             mMediaRecorder.setOutputFile(mSaveFile.getOutputMediaFile(SaveFile.MEDIA_TYPE_VIDEO).toString());
             mMediaRecorder.setPreviewDisplay(mCameraPreview.getHolder().getSurface());
+            if (mIsTimeLapse) mMediaRecorder.setCaptureRate(0.1);
 
             /**
              * TODO
