@@ -1,6 +1,14 @@
 package com.mathilde.customcam.custom_pick;
 
 import android.app.Activity;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -8,16 +16,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mathilde.customcam.R;
 import com.mathilde.customcam.adapter.FilterAdapter;
+import com.mathilde.customcam.camera.SaveFile;
+import com.mathilde.customcam.image.Utils;
 import com.mathilde.customcam.widget.StartPointSeekBar;
 import com.meetme.android.horizontallistview.HorizontalListView;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,14 +46,18 @@ import java.util.List;
  * create an instance of this fragment.
  *
  */
-public class CustomPickFragment extends Fragment {
+public class CustomPickFragment extends Fragment implements View.OnClickListener{
     private static String TAG = "CustomPickFragment";
 
 
     private HorizontalListView mHorizontalListView;
     private FilterAdapter mFilterAdapter;
     private List<String> mList;
-
+    private Bitmap srcBitmap;
+    private ImageView mPreviewImageView;
+    private ImageView mDoneImageView;
+    private ImageView mUndoImageView;
+    private SaveFile mSaveFile;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -80,7 +100,19 @@ public class CustomPickFragment extends Fragment {
         }
 
     }
-
+    private Bitmap getThumbnailBitmap(String path, int thumbnailSize) {
+        BitmapFactory.Options bounds = new BitmapFactory.Options();
+        bounds.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, bounds);
+        if ((bounds.outWidth == -1) || (bounds.outHeight == -1)) {
+            return null;
+        }
+        int originalSize = (bounds.outHeight > bounds.outWidth) ? bounds.outHeight
+                : bounds.outWidth;
+        BitmapFactory.Options opts = new BitmapFactory.Options();
+        opts.inSampleSize = originalSize / thumbnailSize;
+        return BitmapFactory.decodeFile(path, opts);
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -88,11 +120,19 @@ public class CustomPickFragment extends Fragment {
 
         Bundle b = getActivity().getIntent().getExtras();
         View v = inflater.inflate(R.layout.fragment_custom_pick, container, false);
-        ImageView i = (ImageView)v.findViewById(R.id.image_preview_custom);
-        i.setImageURI((Uri) b.get("path"));
+        mPreviewImageView = (ImageView)v.findViewById(R.id.image_preview_custom);
+        mDoneImageView = (ImageView)v.findViewById(R.id.done);
+        mUndoImageView = (ImageView)v.findViewById(R.id.undo);
+        mDoneImageView.setOnClickListener(this);
+        mUndoImageView.setOnClickListener(this);
         mList = new ArrayList<String>();
         mHorizontalListView = (HorizontalListView) v.findViewById(R.id.horizontalListView_filters);
         mFilterAdapter = new FilterAdapter(getActivity(),mList);
+        mSaveFile = new SaveFile(getActivity());
+
+        /**
+         * TODO: REMOVE THIS SHIT
+         */
         mList.add("Normal");
         mList.add("Amaro");
         mList.add("Mayfair");
@@ -103,24 +143,32 @@ public class CustomPickFragment extends Fragment {
         mList.add("Sierra");
         mList.add("Willow");
 
-
+        srcBitmap = BitmapFactory.decodeFile(b.get("path").toString());
+        mPreviewImageView.setImageURI((Uri) b.get("uri"));
         StartPointSeekBar<Integer> seekBar = new StartPointSeekBar<Integer>(-100, +100, getActivity());
         seekBar.setNormalizedValue(0.5);
         seekBar.setOnSeekBarChangeListener(new StartPointSeekBar.OnSeekBarChangeListener<Integer>()
         {
             @Override
-            public void onOnSeekBarValueChange(StartPointSeekBar<?> bar, Integer value)
-            {
-                Log.d(TAG, "seekbar value:" + value);
+            public void onOnSeekBarValueChange(StartPointSeekBar<?> bar, Integer value){
+                mPreviewImageView.setImageBitmap(Utils.doBrightness(srcBitmap, value));
             }
         });
 
         // add RangeSeekBar to pre-defined layout
         ViewGroup layout = (ViewGroup) v.findViewById(R.id.seekbarwrapper);
+
         layout.addView(seekBar);
         mFilterAdapter.notifyDataSetChanged();
         // Assign adapter to the HorizontalListView
         mHorizontalListView.setAdapter(mFilterAdapter);
+        final RelativeLayout brigthness = (RelativeLayout)v.findViewById(R.id.layout_seekbarwrapper);
+        mHorizontalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(brigthness.getVisibility() == View.GONE) brigthness.setVisibility(View.VISIBLE);
+            }
+        });
         return v;
     }
 
@@ -146,6 +194,39 @@ public class CustomPickFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.done:
+                File pictureFile = mSaveFile.getOutputMediaFile(SaveFile.MEDIA_TYPE_IMAGE);
+                byte[] pictureBytes;
+                mPreviewImageView.setDrawingCacheEnabled(false);
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                //copy the bitmap cause you cannot compress a recycle bitmap
+                Bitmap mb = ((BitmapDrawable)mPreviewImageView.getDrawable()).getBitmap().copy(Bitmap.Config.ARGB_8888, false);
+                mb.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+                pictureBytes = bos.toByteArray();
+
+                //recycle bitmap to avoid outofmemeory error
+                mb.recycle();
+                FileOutputStream fs;
+                try {
+                    fs = new FileOutputStream(pictureFile);
+                    fs.write(pictureBytes);
+                    fs.close();
+                    Log.d(TAG, "Bitmap save");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case R.id.undo:
+                getActivity().onBackPressed();
+                break;
+        }
     }
 
     /**

@@ -141,7 +141,6 @@ public class CameraActivity extends FragmentActivity {
         public View initView(View v) {
             mPreview = (FrameLayout) v.findViewById(R.id.camera_preview);
             //Create the instance of the camera
-            //mCamera = getCameraInstance(Camera.CameraInfo.CAMERA_FACING_BACK);
             mGridButton = (Button) v.findViewById(R.id.grid);
             mSwitchCameraButton = (Button) v.findViewById(R.id.switch_camera);
             mGridLines = (GridLines) v.findViewById(R.id.grid_lines);
@@ -152,18 +151,11 @@ public class CameraActivity extends FragmentActivity {
             mSaveFile = new SaveFile(getActivity());
 
             initFloatingMenu();
-
-//            initParamsCamera();
-
-
             mSwitchCameraButton.setOnClickListener(this);
             mGridButton.setOnClickListener(this);
             mFlashButton.setOnClickListener(this);
             mTakePictureButton.setOnClickListener(this);
             mSwitchVideoButton.setOnClickListener(this);
-
-//            mCameraPreview = new CameraPreview(getActivity().getBaseContext(), mCamera);
-//            mPreview.addView(mCameraPreview, 0);
             return v;
         }
 
@@ -303,12 +295,11 @@ public class CameraActivity extends FragmentActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //setImage(pictureFile, 0);
-
-                //mCamera.startPreview();
                 mOnProgress = false;
-releaseCamera();
-                startActivity(new Intent(getActivity(), CustomPickActivity.class).putExtra("path",Uri.fromFile(pictureFile)));
+                releaseCamera();
+                startActivity(new Intent(getActivity(), CustomPickActivity.class)
+                        .putExtra("uri",Uri.fromFile(pictureFile))
+                .putExtra("path",pictureFile.getAbsolutePath()));
             }
         };
 

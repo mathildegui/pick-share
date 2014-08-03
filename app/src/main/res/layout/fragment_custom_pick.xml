@@ -10,12 +10,37 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:layout_above="@+id/seekbarwrapper"/>
-    <FrameLayout
-        android:id="@+id/seekbarwrapper"
+        android:layout_above="@+id/layout_seekbarwrapper"/>
+    <RelativeLayout
+        android:id="@+id/layout_seekbarwrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/horizontalListView_filters" />
+        android:gravity="center_vertical"
+        android:layout_above="@+id/horizontalListView_filters"
+        android:visibility="gone">
+        <ImageView
+            android:id="@+id/undo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_cancel"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"/>
+        <FrameLayout
+            android:id="@+id/seekbarwrapper"
+            android:layout_toRightOf="@+id/undo"
+            android:layout_toLeftOf="@+id/done"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
+        <ImageView
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_accept"
+            android:layout_alignParentRight="true"
+            android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
     <com.meetme.android.horizontallistview.HorizontalListView
         xmlns:widget="http://schemas.android.com/apk/res-auto"
         android:id="@+id/horizontalListView_filters"
