@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".custom_pick.CustomMatrixFragment"
+    android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+    <SeekBar
+        android:id="@+id/seekbar_red"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <SeekBar
+        android:id="@+id/seekbar_green"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <SeekBar
+        android:id="@+id/seekbar_blue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+    <SeekBar
+        android:id="@+id/seekbar_alpha"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/image_custom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

@@ -1,7 +1,9 @@
 package com.mathilde.customcam.custom_pick;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -35,6 +37,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -48,16 +51,22 @@ import java.util.List;
  */
 public class CustomPickFragment extends Fragment implements View.OnClickListener{
     private static String TAG = "CustomPickFragment";
+    private static int CROP = 100;
+
+    private static int BRIGHTNESS = 100;
+    private static int CONTRAST = 100;
 
 
     private HorizontalListView mHorizontalListView;
     private FilterAdapter mFilterAdapter;
-    private List<String> mList;
+    private HashMap<Integer, String> mList;
     private Bitmap srcBitmap;
     private ImageView mPreviewImageView;
     private ImageView mDoneImageView;
     private ImageView mUndoImageView;
     private SaveFile mSaveFile;
+
+    private int mState;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -100,32 +109,18 @@ public class CustomPickFragment extends Fragment implements View.OnClickListener
         }
 
     }
-    private Bitmap getThumbnailBitmap(String path, int thumbnailSize) {
-        BitmapFactory.Options bounds = new BitmapFactory.Options();
-        bounds.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(path, bounds);
-        if ((bounds.outWidth == -1) || (bounds.outHeight == -1)) {
-            return null;
-        }
-        int originalSize = (bounds.outHeight > bounds.outWidth) ? bounds.outHeight
-                : bounds.outWidth;
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inSampleSize = originalSize / thumbnailSize;
-        return BitmapFactory.decodeFile(path, opts);
-    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-
-        Bundle b = getActivity().getIntent().getExtras();
+        final Bundle b = getActivity().getIntent().getExtras();
         View v = inflater.inflate(R.layout.fragment_custom_pick, container, false);
         mPreviewImageView = (ImageView)v.findViewById(R.id.image_preview_custom);
         mDoneImageView = (ImageView)v.findViewById(R.id.done);
         mUndoImageView = (ImageView)v.findViewById(R.id.undo);
         mDoneImageView.setOnClickListener(this);
         mUndoImageView.setOnClickListener(this);
-        mList = new ArrayList<String>();
+        mList = new HashMap<Integer, String>();
         mHorizontalListView = (HorizontalListView) v.findViewById(R.id.horizontalListView_filters);
         mFilterAdapter = new FilterAdapter(getActivity(),mList);
         mSaveFile = new SaveFile(getActivity());
@@ -133,15 +128,15 @@ public class CustomPickFragment extends Fragment implements View.OnClickListener
         /**
          * TODO: REMOVE THIS SHIT
          */
-        mList.add("Normal");
-        mList.add("Amaro");
-        mList.add("Mayfair");
-        mList.add("Rise");
-        mList.add("Hudson");
-        mList.add("Valencia");
-        mList.add("x-pro II");
-        mList.add("Sierra");
-        mList.add("Willow");
+        mList.put(new Integer(0),"Brightness");
+        mList.put(new Integer(1),"Crop");
+        mList.put(new Integer(2),"Contrast");
+        mList.put(new Integer(3),"Black&White");
+        mList.put(new Integer(4),"Sepia");
+        mList.put(new Integer(5),"Negative");
+        mList.put(new Integer(6),"x-pro II");
+        mList.put(new Integer(7),"Sierra");
+        mList.put(new Integer(8),"Willow");
 
         srcBitmap = BitmapFactory.decodeFile(b.get("path").toString());
         mPreviewImageView.setImageURI((Uri) b.get("uri"));
@@ -151,7 +146,8 @@ public class CustomPickFragment extends Fragment implements View.OnClickListener
         {
             @Override
             public void onOnSeekBarValueChange(StartPointSeekBar<?> bar, Integer value){
-                mPreviewImageView.setImageBitmap(Utils.doBrightness(srcBitmap, value));
+                if(mState == BRIGHTNESS)mPreviewImageView.setImageBitmap(Utils.doBrightness(srcBitmap, value));
+                else if(mState == CONTRAST)mPreviewImageView.setImageBitmap(Utils.doContrast(srcBitmap, value));
             }
         });
 
@@ -162,11 +158,53 @@ public class CustomPickFragment extends Fragment implements View.OnClickListener
         mFilterAdapter.notifyDataSetChanged();
         // Assign adapter to the HorizontalListView
         mHorizontalListView.setAdapter(mFilterAdapter);
-        final RelativeLayout brigthness = (RelativeLayout)v.findViewById(R.id.layout_seekbarwrapper);
+        final RelativeLayout seekBarRelativeLayout = (RelativeLayout)v.findViewById(R.id.layout_seekbarwrapper);
         mHorizontalListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if(brigthness.getVisibility() == View.GONE) brigthness.setVisibility(View.VISIBLE);
+
+                    switch(position){
+                        case 0:
+                            if(seekBarRelativeLayout.getVisibility() == View.GONE) seekBarRelativeLayout.setVisibility(View.VISIBLE);
+                            mState = BRIGHTNESS;
+                            break;
+                        case 1:
+                            Utils.performCrop((Uri) b.get("uri"), getActivity(), CROP);
+                            break;
+                        case 2:
+                            mState = CONTRAST;
+                            if(seekBarRelativeLayout.getVisibility() == View.GONE) seekBarRelativeLayout.setVisibility(View.VISIBLE);
+                            break;
+                        case 3:
+                            mPreviewImageView.setImageBitmap(Utils.doMonochrome(srcBitmap));
+                            break;
+                        case 4:
+                            mPreviewImageView.setImageBitmap(Utils.doSepia(srcBitmap));
+                            break;
+                        case 5:
+                            mPreviewImageView.setImageBitmap(Utils.doNegative(srcBitmap));
+                            break;
+                        case 6:
+                            Fragment newFragment = new CustomMatrixFragment();
+                            // consider using Java coding conventions (upper first char class names!!!)
+                            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                            // Replace whatever is in the fragment_container view with this fragment,
+                            // and add the transaction to the back stack
+                            Bundle bundle = new Bundle();
+                            bundle.putString("uri",b.get("uri").toString());
+                            bundle.putString("path",b.get("path").toString());
+                            newFragment.setArguments(bundle);
+                            transaction.replace(R.id.container, newFragment);
+                            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+                            transaction.addToBackStack(TAG);
+                            // Commit the transaction
+                            transaction.commit();
+//                            startActivity(new Intent(getActivity(), CustomMatrixFragment.class)
+//                                    .putExtra("uri",(Uri) b.get("uri"))
+//                                    .putExtra("path",(Uri) b.get("path")));
+                            break;
+                    }
             }
         });
         return v;

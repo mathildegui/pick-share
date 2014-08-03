@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.mathilde.customcam.R;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -19,10 +20,10 @@ public class FilterAdapter extends BaseAdapter{
     public static final String TAG = "FilterAdapter";
 
     private LayoutInflater mInflater;
-    private List<String> mList;
+    private HashMap<Integer, String> mList;
     private Context mContext;
 
-    public FilterAdapter(Context context, List<String> list){
+    public FilterAdapter(Context context, HashMap<Integer, String> list){
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mList = list;
         mContext = context;
@@ -44,7 +45,7 @@ public class FilterAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         Holder holder;
 
         if (convertView == null) {
@@ -65,8 +66,6 @@ public class FilterAdapter extends BaseAdapter{
         holder.textView.setText(getItem(position).toString());
         holder.imageView.setImageDrawable(mContext.getResources().getDrawable(R.drawable.small_circle_red));
         // Set the color
-        //convertView.setBackgroundColor(getItem(position).getBackgroundColor());
-
         return convertView;
     }
 

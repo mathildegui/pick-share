@@ -8,7 +8,7 @@ import android.view.MenuItem;
 
 import com.mathilde.customcam.R;
 
-public class CustomPickActivity extends FragmentActivity implements CustomPickFragment.OnFragmentInteractionListener {
+public class CustomPickActivity extends FragmentActivity implements CustomPickFragment.OnFragmentInteractionListener, CustomMatrixFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
